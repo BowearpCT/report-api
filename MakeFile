@@ -1,0 +1,28 @@
+.DEFAULT_GOAL := setup
+
+setup:
+	@ echo "> Check modules"
+	@ if [ ! -d "node_modules" ]; then npm install; fi
+	@ echo "> Done"
+
+start:
+	@ echo "> Starting setup environment"
+	@ docker-compose up -d --build
+	@ echo "> Restore data to development database"
+	@ ./seed/scripts/restore-data-from-file.sh
+	@ echo "> Done"
+
+save_data:
+	@ echo "> Starting dump data to file"
+	@ ./seed/scripts/dump-data-to-file.sh
+	@ echo "> Done"
+
+reset_data:
+	@ echo "> Reseting data on database"
+	@ ./seed/scripts/restore-data-from-file.sh
+	@ echo "> Done"
+
+stop:
+	@ echo "> Stopping environment"
+	@ docker-compose down
+	@ echo "> Done"

@@ -1,0 +1,41 @@
+version: "3.5"
+services:
+  mongo:
+    container_name: report_api_mongo
+    image: mongo:4.0
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=report
+      - MONGO_INITDB_ROOT_PASSWORD=reportz
+    networks:
+      - report_api
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "2"
+
+  app:
+    container_name: report_api_app
+    build:
+      context: .
+      dockerfile: ./docker/development/node/Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - 3044:3044
+    depends_on:
+      - mongo
+    networks:
+      - report_api
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "2"
+
+networks:
+  report_api:
+    name: report_api
+    driver: bridge
