@@ -17,6 +17,17 @@ class CustomerUsecase {
 
     return createdResult;
   }
+
+  async getCustomer() {
+    let customers = null;
+    try {
+      customers = await this.customerRepo.getCustomer();
+    } catch (error) {
+      throw error;
+    }
+
+    return customers;
+  }
 }
 
 module.exports = CustomerUsecase;
