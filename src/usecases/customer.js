@@ -18,6 +18,14 @@ class CustomerUsecase {
     return createdResult;
   }
 
+  async editCustomer(id, editData) {
+    try {
+      await this.customerRepo.editCustomer(id, editData);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getCustomer() {
     let customers = null;
     try {

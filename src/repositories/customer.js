@@ -31,6 +31,14 @@ class CustomerRepo {
 
     return customers;
   }
+
+  async editCustomer(id, editData) {
+    try {
+      await this.customerProvider.updateById(id, editData);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = CustomerRepo;

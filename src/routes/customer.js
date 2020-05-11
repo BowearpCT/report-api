@@ -9,7 +9,7 @@ const createCustomer = async (req, res) => {
   const { data } = req.body;
   try {
     if (!data) {
-      res.formatter.badRequest("not found data in your request body");
+      return res.formatter.badRequest("not found data in your request body");
     }
     const customerProvider = DI.get("customerProvider");
     const customerRepo = new CustomerRepo({
@@ -22,6 +22,30 @@ const createCustomer = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.formatter.badRequest();
+  }
+};
+
+const editCustomer = async (req, res) => {
+  const { id } = req.params;
+  const { data } = req.body;
+  try {
+    if (!data) {
+      return res.formatter.badRequest("data in found on your body.");
+    }
+    if (!id) {
+      return res.formatter.badRequest("id not found in your params");
+    }
+    const customerProvider = DI.get("customerProvider");
+    const customerRepo = new CustomerRepo({
+      customerProvider,
+      CustomerMongo
+    });
+    const customerUsecase = new CustomerUsecase(customerRepo);
+    await customerUsecase.editCustomer(id, data);
+    res.formatter.ok();
+  } catch (error) {
+    console.error(error);
+    res.formatter.serverError();
   }
 };
 
@@ -42,9 +66,11 @@ const getCustomer = async (req, res) => {
 };
 
 router.post("/create", createCustomer);
+router.put("/:id", editCustomer);
 router.get("/", getCustomer);
 
 module.exports = {
   router,
-  getCustomer
+  getCustomer,
+  editCustomer
 };
