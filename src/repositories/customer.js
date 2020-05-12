@@ -39,6 +39,14 @@ class CustomerRepo {
       throw error;
     }
   }
+
+  async deleteCustomer(id) {
+    try {
+      await this.customerProvider.deleteById(id);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = CustomerRepo;

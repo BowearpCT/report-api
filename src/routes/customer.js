@@ -25,6 +25,25 @@ const createCustomer = async (req, res) => {
   }
 };
 
+const deleteCustomer = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!id) {
+      return res.formatter.badRequest("id not found in your params");
+    }
+    const customerProvider = DI.get("customerProvider");
+    const customerRepo = new CustomerRepo({
+      customerProvider
+    });
+    const customerUsecase = new CustomerUsecase(customerRepo);
+    await customerUsecase.deleteCustomer(id);
+    res.formatter.ok();
+  } catch (error) {
+    console.error(error);
+    res.formatter.serverError();
+  }
+};
+
 const editCustomer = async (req, res) => {
   const { id } = req.params;
   const { data } = req.body;
@@ -65,9 +84,10 @@ const getCustomer = async (req, res) => {
   }
 };
 
+router.get("/", getCustomer);
 router.post("/create", createCustomer);
 router.put("/:id", editCustomer);
-router.get("/", getCustomer);
+router.delete("/:id", deleteCustomer);
 
 module.exports = {
   router,

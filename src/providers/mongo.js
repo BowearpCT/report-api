@@ -153,18 +153,9 @@ class MongoProvider {
     let deleteResult = null;
 
     try {
-      const now = Datetime.now();
-      const deleteData = { deleted_at: now };
-
       const filter = { _id: id };
-      const deleteQuery = { $set: deleteData };
-      const deleteOptions = { returnOriginal: false };
-
-      deleteResult = await this.connection.findOneAndUpdate(
-        filter,
-        deleteQuery,
-        deleteOptions
-      );
+      deleteResult = await this.connection.deleteOne(filter);
+      console.log();
     } catch (error) {
       throw error;
     }

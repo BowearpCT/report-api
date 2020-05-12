@@ -36,6 +36,14 @@ class CustomerUsecase {
 
     return customers;
   }
+
+  async deleteCustomer(id) {
+    try {
+      await this.customerRepo.deleteCustomer(id);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = CustomerUsecase;
