@@ -27,7 +27,7 @@ class MongoProvider {
     if (!this.connection) {
       throw "Connection not found";
     }
-
+    console.log(filter);
     const { sort, start, limit } = options;
     const queryLimit = limit !== null && typeof limit === "number" ? limit : 0;
     const querySkip =

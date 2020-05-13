@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { ReportUsecase } = require("../usecases");
-const { ReportMongo } = require("../formatters");
+const { ReportMongo, ReportFormatter } = require("../formatters");
 const { ReportRepo } = require("../repositories");
 const { DI } = require("../utils");
 
@@ -25,7 +25,29 @@ const createReport = async (req, res) => {
   }
 };
 
+const getReportFromCustomerId = async (req, res) => {
+  let reports = null;
+  const { id } = req.params;
+  try {
+    if (!id) {
+      return res.formatter.badRequest("Not found id from your params.");
+    }
+    const reportProvider = DI.get("reportProvider");
+    const reportRepo = new ReportRepo({
+      reportProvider,
+      ReportFormatter
+    });
+    const reportUsecase = new ReportUsecase(reportRepo);
+    reports = await reportUsecase.getReportFromCustomerId(id);
+    res.formatter.ok(reports);
+  } catch (error) {
+    console.error(error);
+    res.formatter.serverError();
+  }
+};
+
 router.post("/create", createReport);
+router.get("/customer/:id", getReportFromCustomerId);
 module.exports = {
   router
 };
