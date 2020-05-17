@@ -25,7 +25,7 @@ const createReport = async (req, res) => {
   }
 };
 
-const getReportFromCustomerId = async (req, res) => {
+const getLatestReportFromCustomerId = async (req, res) => {
   let reports = null;
   const { id } = req.params;
   try {
@@ -38,7 +38,7 @@ const getReportFromCustomerId = async (req, res) => {
       ReportFormatter
     });
     const reportUsecase = new ReportUsecase(reportRepo);
-    reports = await reportUsecase.getReportFromCustomerId(id);
+    reports = await reportUsecase.getLatestReportFromCustomerId(id);
     res.formatter.ok(reports);
   } catch (error) {
     console.error(error);
@@ -47,7 +47,7 @@ const getReportFromCustomerId = async (req, res) => {
 };
 
 router.post("/create", createReport);
-router.get("/customer/:id", getReportFromCustomerId);
+router.get("/customer/:id", getLatestReportFromCustomerId);
 module.exports = {
   router
 };

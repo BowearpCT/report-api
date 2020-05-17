@@ -1,4 +1,5 @@
 const { Report } = require("../entities");
+const moment = require("moment");
 
 class ReportUsecase {
   constructor(repo) {
@@ -18,16 +19,31 @@ class ReportUsecase {
     return createdResult;
   }
 
-  async getReportFromCustomerId(customerId) {
-    let reports = null;
+  async getLatestReportFromCustomerId(customerId) {
+    let latestReport = null;
 
     try {
-      reports = await this.reportRepo.getReportFromCustomerId(customerId);
+      const reports = await this.reportRepo.getLatestReportFromCustomerId(
+        customerId
+      );
+      latestReport = reports.reduce(
+        (acc, report) => {
+          if (moment(acc[0].daily_date).isBefore(report.daily_date)) {
+            acc[0] = report;
+          }
+          return acc;
+        },
+        [
+          {
+            daily_date: moment("2018-01-01").format("YYYY-MM-DD")
+          }
+        ]
+      );
     } catch (error) {
       throw error;
     }
 
-    return reports;
+    return latestReport;
   }
 }
 
