@@ -67,7 +67,7 @@ class ReportUsecase {
           moment(report.daily_date).isSame(date)
         );
         let movement = {};
-        if (filteredReport.length !== 0) {
+        if (filteredReport) {
           movement = {
             Date: filteredReport.daily_date,
             Engagement: Object.values(
