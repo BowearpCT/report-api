@@ -46,8 +46,37 @@ const getLatestReportFromCustomerId = async (req, res) => {
   }
 };
 
+const getEngagementMovement = async (req, res) => {
+  let movements = null;
+  const { id, period, date } = req.params;
+  try {
+    if (!id) {
+      return res.formatter.badRequest("Not found id from your params.");
+    }
+    if (!period) {
+      return res.formatter.badRequest("Not found period from your params.");
+    }
+    if (!date) {
+      return res.formatter.badRequest("Not found period from your params.");
+    }
+    const reportProvider = DI.get("reportProvider");
+    const reportRepo = new ReportRepo({
+      reportProvider,
+      ReportFormatter
+    });
+    const reportUsecase = new ReportUsecase(reportRepo);
+    movements = await reportUsecase.getEngagementMovement(id, period, date);
+    res.formatter.ok(movements);
+  } catch (error) {
+    console.error(error);
+    res.formatter.serverError();
+  }
+};
+
 router.post("/create", createReport);
+router.get("/customer/:id/:date/:period", getEngagementMovement);
 router.get("/customer/:id", getLatestReportFromCustomerId);
+
 module.exports = {
   router
 };

@@ -26,7 +26,7 @@ class ReportRepo {
     return success;
   }
 
-  async getLatestReportFromCustomerId(customerId) {
+  async getReportFromCustomerId(customerId) {
     let reports = null;
     const filter = { customer_id: customerId };
     try {
