@@ -19,6 +19,70 @@ class ReportUsecase {
     return createdResult;
   }
 
+  async getReportFromCustomerIdAndDate(customerId, date) {
+    let reports = null;
+
+    try {
+      const result = await this.reportRepo.getReportFromCustomerIdAndDate(
+        customerId,
+        date
+      );
+      if (result.length !== 0) {
+        reports = result;
+      } else {
+        reports = [
+          {
+            _id: "rp_kab4yqrn",
+            customer_id: "c_ka67z4l8",
+            message_by_channel: {
+              Instagram: {
+                "no report": 0
+              },
+              Facebook: {
+                "no report": 0
+              },
+              News: {
+                "no report": 0
+              },
+              Twitter: {
+                "no report": 0
+              },
+              Youtube: {
+                "no report": 0
+              },
+              Forum: {
+                "no report": 0
+              }
+            },
+            daily_date: date,
+            engagement_by_channel: {
+              Instagram: 0,
+              Facebook: 0,
+              News: 0,
+              Twitter: 0,
+              Youtube: 0,
+              Forum: 0
+            },
+            top_account: [],
+            summary_message: [""],
+            sentiment: {
+              Positive: 0,
+              Negative: 0,
+              Neutral: 0,
+              Crisis: 0
+            },
+            created_at: "2020-05-17T14:09:32.788Z",
+            updated_at: "2020-05-17T14:09:32.788Z",
+            deleted_at: null
+          }
+        ];
+      }
+    } catch (error) {
+      throw error;
+    }
+    return reports;
+  }
+
   async getLatestReportFromCustomerId(customerId) {
     let latestReport = null;
 
