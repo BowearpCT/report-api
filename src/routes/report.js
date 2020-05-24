@@ -14,7 +14,7 @@ const createReport = async (req, res) => {
     const reportProvider = DI.get("reportProvider");
     const reportRepo = new ReportRepo({
       reportProvider,
-      ReportMongo
+      ReportMongo,
     });
     const reportUsecase = new ReportUsecase(reportRepo);
     const createdResult = await reportUsecase.createReport(data);
@@ -35,7 +35,7 @@ const getLatestReportFromCustomerId = async (req, res) => {
     const reportProvider = DI.get("reportProvider");
     const reportRepo = new ReportRepo({
       reportProvider,
-      ReportFormatter
+      ReportFormatter,
     });
     const reportUsecase = new ReportUsecase(reportRepo);
     reports = await reportUsecase.getLatestReportFromCustomerId(id);
@@ -48,7 +48,7 @@ const getLatestReportFromCustomerId = async (req, res) => {
 
 const getReportFromCustomerIdAndDate = async (req, res) => {
   let reports = null;
-  const { id, date } = req.params;
+  const { id, date, period } = req.params;
   try {
     if (!id) {
       return res.formatter.badRequest("Not found id from your params.");
@@ -56,13 +56,20 @@ const getReportFromCustomerIdAndDate = async (req, res) => {
     if (!date) {
       return res.formatter.badRequest("Not found date from your params.");
     }
+    if (!period) {
+      return res.formatter.badRequest("Not found period from your params.");
+    }
     const reportProvider = DI.get("reportProvider");
     const reportRepo = new ReportRepo({
       reportProvider,
-      ReportFormatter
+      ReportFormatter,
     });
     const reportUsecase = new ReportUsecase(reportRepo);
-    reports = await reportUsecase.getReportFromCustomerIdAndDate(id, date);
+    reports = await reportUsecase.getReportFromCustomerIdAndDate(
+      id,
+      date,
+      period
+    );
     res.formatter.ok(reports);
   } catch (error) {
     console.error(error);
@@ -86,7 +93,7 @@ const getEngagementMovement = async (req, res) => {
     const reportProvider = DI.get("reportProvider");
     const reportRepo = new ReportRepo({
       reportProvider,
-      ReportFormatter
+      ReportFormatter,
     });
     const reportUsecase = new ReportUsecase(reportRepo);
     movements = await reportUsecase.getEngagementMovement(id, period, date);
@@ -99,9 +106,12 @@ const getEngagementMovement = async (req, res) => {
 
 router.post("/create", createReport);
 router.get("/customer/:id/:date/:period", getEngagementMovement);
-router.get("/customer/:id/:date", getReportFromCustomerIdAndDate);
+router.get(
+  "/customer/:id/:date/period/:period",
+  getReportFromCustomerIdAndDate
+);
 router.get("/customer/:id", getLatestReportFromCustomerId);
 
 module.exports = {
-  router
+  router,
 };

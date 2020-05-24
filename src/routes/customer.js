@@ -14,7 +14,7 @@ const createCustomer = async (req, res) => {
     const customerProvider = DI.get("customerProvider");
     const customerRepo = new CustomerRepo({
       customerProvider,
-      CustomerMongo
+      CustomerMongo,
     });
     const customerUsecase = new CustomerUsecase(customerRepo);
     const createdResult = await customerUsecase.createCustomer(data);
@@ -33,7 +33,7 @@ const deleteCustomer = async (req, res) => {
     }
     const customerProvider = DI.get("customerProvider");
     const customerRepo = new CustomerRepo({
-      customerProvider
+      customerProvider,
     });
     const customerUsecase = new CustomerUsecase(customerRepo);
     await customerUsecase.deleteCustomer(id);
@@ -57,7 +57,7 @@ const editCustomer = async (req, res) => {
     const customerProvider = DI.get("customerProvider");
     const customerRepo = new CustomerRepo({
       customerProvider,
-      CustomerMongo
+      CustomerMongo,
     });
     const customerUsecase = new CustomerUsecase(customerRepo);
     await customerUsecase.editCustomer(id, data);
@@ -73,7 +73,7 @@ const getCustomer = async (req, res) => {
     const customerProvider = DI.get("customerProvider");
     const customerRepo = new CustomerRepo({
       customerProvider,
-      CustomerFormatter
+      CustomerFormatter,
     });
     const customerUsecase = new CustomerUsecase(customerRepo);
     const customers = await customerUsecase.getCustomer();
@@ -92,5 +92,5 @@ router.delete("/:id", deleteCustomer);
 module.exports = {
   router,
   getCustomer,
-  editCustomer
+  editCustomer,
 };

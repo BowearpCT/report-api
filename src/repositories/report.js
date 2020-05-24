@@ -11,7 +11,7 @@ class ReportRepo {
     try {
       const filter = {
         daily_date: report.dailyDate,
-        customer_id: report.customerId
+        customer_id: report.customerId,
       };
       const found = await this.reportProvider.find(filter);
       if (found.length == 0) {
@@ -27,11 +27,16 @@ class ReportRepo {
 
   async getReportFromCustomerIdAndDate(customerId, date) {
     let reports = null;
-    const filter = { customer_id: customerId, daily_date: date };
+    const filter = {
+      customer_id: customerId,
+      daily_date: {
+        $in: date,
+      },
+    };
     try {
       console.log("fileter", filter);
       reports = await this.reportProvider.find(filter);
-      console.log(reports);
+      // console.log(reports);
     } catch (error) {
       throw error;
     }

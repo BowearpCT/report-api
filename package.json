@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/app.js"
+    "start": "nodemon src/app.js",
+    "setup": "make setup && make start",
+    "save-data": "make save_data",
+    "reset-data": "make reset_data",
+    "stop": "make stop"
   },
   "repository": {
     "type": "git",
