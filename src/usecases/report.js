@@ -297,6 +297,52 @@ class ReportUsecase {
     }
     return movements;
   }
+
+  async getEngagementMovementByChannel(customerId, period, date, channel) {
+    let movements = null;
+    let dateOfPeriod = [];
+    try {
+      for (let i = 0; i < period; i++) {
+        dateOfPeriod.push(
+          moment(date).subtract(i, "days").format("YYYY-MM-DD")
+        );
+      }
+      const reports = await this.reportRepo.getReportFromCustomerId(customerId);
+
+      movements = dateOfPeriod.reduce((acc, date) => {
+        const filteredReport = reports.find((report) => {
+          return moment(report.daily_date).isSame(date);
+        });
+        let movement = {};
+        console.log("filtered report", filteredReport);
+        if (filteredReport) {
+          movement = {
+            Date: filteredReport.daily_date,
+            Engagement: filteredReport.engagement_by_channel[`${channel}`]
+              ? filteredReport.engagement_by_channel[`${channel}`]
+              : 0,
+            Messages: filteredReport.message_by_channel[`${channel}`]
+              ? Object.values(
+                  filteredReport.message_by_channel[`${channel}`]
+                ).reduce((a, b) => a + b, 0)
+              : 0,
+          };
+          console.log("channel", channel);
+          console.log("MOVEMENT I SAD", movement);
+        } else {
+          movement = {
+            Date: date,
+            Engagement: 0,
+            Messages: 0,
+          };
+        }
+        return [...acc, movement];
+      }, []);
+    } catch (error) {
+      throw error;
+    }
+    return movements;
+  }
 }
 
 module.exports = ReportUsecase;
