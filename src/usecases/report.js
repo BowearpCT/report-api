@@ -19,6 +19,16 @@ class ReportUsecase {
     return createdResult;
   }
 
+  async checkReport(customerId, date) {
+    let existing;
+    try {
+      existing = await this.reportRepo.checkReport(customerId, date);
+    } catch (error) {
+      throw error;
+    }
+    return existing;
+  }
+
   async getReportFromCustomerIdAndDate(customerId, date, period) {
     let reports = null;
     let dateOfPeriod = [];

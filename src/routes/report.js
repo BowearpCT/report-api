@@ -21,7 +21,31 @@ const createReport = async (req, res) => {
     res.formatter.created(createdResult);
   } catch (error) {
     console.error(error);
-    res.formatter.badRequest();
+    res.formatter.serverError(error);
+  }
+};
+
+const checkReport = async (req, res) => {
+  let existing = false;
+  const { customerId, date } = req.params;
+  try {
+    if (!customerId) {
+      return res.formatter.badRequest("Not found customerId from your params.");
+    }
+    if (!date) {
+      return res.formatter.badRequest("Not found date from your params.");
+    }
+    const reportProvider = DI.get("reportProvider");
+    const reportRepo = new ReportRepo({
+      reportProvider,
+      ReportFormatter,
+    });
+    const reportUsecase = new ReportUsecase(reportRepo);
+    existing = await reportUsecase.checkReport(customerId, date);
+    res.formatter.ok(existing);
+  } catch (error) {
+    console.error(error);
+    res.formatter.serverError();
   }
 };
 
@@ -150,7 +174,7 @@ router.get(
   getReportFromCustomerIdAndDate
 );
 router.get("/customer/:id", getLatestReportFromCustomerId);
-
+router.get("/check/:customerId/:date", checkReport);
 module.exports = {
   router,
 };

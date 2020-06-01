@@ -13,16 +13,34 @@ class ReportRepo {
         daily_date: report.dailyDate,
         customer_id: report.customerId,
       };
-      const found = await this.reportProvider.find(filter);
-      if (found.length == 0) {
-        success = true;
-        await this.reportProvider.create(this.reportMongo.format(report));
+      const found = await this.reportProvider.findOne(filter);
+      if (found) {
+        await this.reportProvider.deleteById(found._id);
       }
+      success = true;
+      await this.reportProvider.create(this.reportMongo.format(report));
     } catch (error) {
       throw error;
     }
 
     return success;
+  }
+
+  async checkReport(customerId, date) {
+    let existing = false;
+    const filter = {
+      customer_id: customerId,
+      daily_date: date,
+    };
+    try {
+      const found = await this.reportProvider.findOne(filter);
+      if (found) {
+        existing = true;
+      }
+    } catch (error) {
+      throw error;
+    }
+    return existing;
   }
 
   async getReportFromCustomerIdAndDate(customerId, date) {

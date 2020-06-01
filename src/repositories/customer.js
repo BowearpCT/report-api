@@ -6,10 +6,18 @@ class CustomerRepo {
     this.customerFormatter = CustomerFormatter;
   }
   async createCustomer(customer) {
-    let success = true;
+    let success = false;
 
     try {
-      await this.customerProvider.create(this.customerMongo.format(customer));
+      const found = await this.customerProvider.findOne({
+        name: customer.name,
+      });
+      console.log("customer id", customer.name);
+      console.log("customer id", found);
+      if (!found) {
+        await this.customerProvider.create(this.customerMongo.format(customer));
+        success = true;
+      }
     } catch (error) {
       throw error;
     }
@@ -23,7 +31,7 @@ class CustomerRepo {
     try {
       const result = await this.customerProvider.find();
       customers = result.map(
-        item => new Customer(this.customerFormatter.format(item))
+        (item) => new Customer(this.customerFormatter.format(item))
       );
     } catch (error) {
       throw error;
